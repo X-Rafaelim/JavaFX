@@ -65,7 +65,7 @@ public class AdicionarTurmaController {
 
     public void initialize()  {
         turmas = FXCollections.observableArrayList();
-        this.tabela.setItems(turmas);
+
         this.coluna_turma.setCellValueFactory(new PropertyValueFactory<Turma,String>("nome"));
         this.coluna_curso.setCellValueFactory(new PropertyValueFactory<Turma,String>("curso"));
         this.col_ano.setCellValueFactory(new PropertyValueFactory<Turma,Integer>("Ano"));
@@ -77,6 +77,8 @@ public class AdicionarTurmaController {
             e.printStackTrace();
         }
 
+        queryTurmas();
+        this.tabela.setItems(turmas);
 
     }
 
@@ -106,10 +108,7 @@ public class AdicionarTurmaController {
     }
 
     public void queryTurmas()  {
-        String sql = "SELECT nomeTurma, nomeCurso, anoTurma" +
-                "FROM turma, curso, ano_curso" +
-                "where turma.curso_idCurso=curso.idCurso" +
-                "and turma.idAno=ano_curso.idAno";
+        String sql = "SELECT nomeTurma, nomeCurso, anoTurma FROM turma, curso, ano_curso where turma.curso_idCurso=curso.idCurso and turma.idAno=ano_curso.idAno";
         try {
             Statement stm = this.connection.createStatement();
             ResultSet result = stm.executeQuery(sql);
@@ -119,6 +118,7 @@ public class AdicionarTurmaController {
                 int ano = result.getInt(3);
                 Turma t = new Turma(nome,curso,ano);
                 turmas.add(t);
+                this.tabela.refresh();
 
 
 
